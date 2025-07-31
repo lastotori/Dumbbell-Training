@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dumbbell Workout Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f0f0f0;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .exercise {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    label {
+      display: flex;
+      align-items: center;
+      margin: 0.25rem 0;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      margin-top: 0.25rem;
+    }
+    button {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background: #d9534f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>30-Min Muscle Workout</h1>
+  <h2>Week <span id="weekNum">1</span></h2>
+
+  <div class="exercise">
+    <h3>Upper Body</h3>
+    <label><input type="checkbox" /> Bent-Over Rows (2-arm)</label>
+    <input type="text" placeholder="Weight / Reps" />
+    <label><input type="checkbox" /> Single-Arm Rows</label>
+    <input type="text" placeholder="Weight / Reps" />
+    <label><input type="checkbox" /> Curl-to-Press</label>
+    <input type="text" placeholder="Weight / Reps" />
+    <label><input type="checkbox" /> Row Hold (seconds)</label>
+    <input type="text" placeholder="Hold Time" />
+  </div>
+
+  <div class="exercise">
+    <h3>Lower Body & Core</h3>
+    <label><input type="checkbox" /> Goblet Squats</label>
+    <input type="text" placeholder="Weight / Reps" />
+    <label><input type="checkbox" /> RDLs (Romanian Deadlifts)</label>
+    <input type="text" placeholder="Weight / Reps" />
+    <label><input type="checkbox" /> Farmer Carry</label>
+    <input type="text" placeholder="Weight / Time" />
+    <label><input type="checkbox" /> Core (Leg Raises / Deadbug)</label>
+    <input type="text" placeholder="Reps / Notes" />
+  </div>
+
+  <div class="exercise">
+    <h3>Pull-Up Progress</h3>
+    <label><input type="checkbox" /> Isometric Dumbbell Row</label>
+    <input type="text" placeholder="Hold Time or Reps" />
+    <label><input type="checkbox" /> Towel Row or Band Row</label>
+    <input type="text" placeholder="Reps / Notes" />
+    <label><input type="checkbox" /> Negative Pull-Up (if applicable)</label>
+    <input type="text" placeholder="Seconds Lowered" />
+  </div>
+
+  <button onclick="resetProgress()">Reset This Week</button>
+
+  <script>
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const inputs = document.querySelectorAll('input[type="text"]');
+    const weekDisplay = document.getElementById("weekNum");
+
+    // Save state on change
+    checkboxes.forEach((cb, i) => {
+      cb.checked = localStorage.getItem("cb" + i) === "true";
+      cb.addEventListener("change", () => {
+        localStorage.setItem("cb" + i, cb.checked);
+      });
+    });
+
+    inputs.forEach((inp, i) => {
+      inp.value = localStorage.getItem("inp" + i) || "";
+      inp.addEventListener("input", () => {
+        localStorage.setItem("inp" + i, inp.value);
+      });
+    });
+
+    function resetProgress() {
+      if (confirm("Reset all progress for the week?")) {
+        checkboxes.forEach((cb, i) => {
+          cb.checked = false;
+          localStorage.setItem("cb" + i, "false");
+        });
+        inputs.forEach((inp, i) => {
+          inp.value = "";
+          localStorage.setItem("inp" + i, "");
+        });
+
+        let currentWeek = parseInt(localStorage.getItem("weekNum") || "1");
+        currentWeek++;
+        localStorage.setItem("weekNum", currentWeek);
+        weekDisplay.textContent = currentWeek;
+      }
+    }
+
+    // Load week number
+    let storedWeek = parseInt(localStorage.getItem("weekNum") || "1");
+    weekDisplay.textContent = storedWeek;
+  </script>
+</body>
+</html>
